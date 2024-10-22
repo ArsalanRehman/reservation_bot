@@ -6,34 +6,70 @@ import time
 
 # Setup Chrome WebDriver options
 chrome_options = Options()
-# chrome_options.add_argument("--headless")  # Optional: Run in headless mode, remove if you want to see the browser
+# chrome_options.add_argument("--headless")  # Uncomment this line to run in headless mode
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
 # Path to ChromeDriver, adjust if necessary
-webdriver_service = Service('/home/arslan/python_course/chromedriver')  
+webdriver_service = Service('/home/arslan/python_course/tenis/chromedriver')
 
 driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)
 
 try:
-    driver.get("https://tenis.randevu.sanliurfa.bel.tr/index.php?tarih=22/10/2024#")
+    driver.get("https://tenis.randevu.sanliurfa.bel.tr/index.php")
     
     # Give the page some time to load (increase sleep if needed)
     time.sleep(5)
 
-    # Find the buttons for available courts with the class for available spots
-    available_buttons = driver.find_elements(By.CSS_SELECTOR, "button.btn-outline-success")
+    # Find all the <a> elements with the desired class
+    elements = driver.find_elements(By.CSS_SELECTOR, "a.btn.btn-outline.btn-outline-dashed.btn-outline-success.btn-active-light-success.mb-2")
 
-    # Iterate over the buttons and click the one after 18:00 if available
-    for button in available_buttons:
-        time_slot = button.text  # Assuming the button text contains the time slot like '18:00'
-        if time_slot and "18:00" in time_slot:
-            button.click()
-            print("Court booked successfully!")
+    # Iterate over the elements and click the one that says "15:00"
+    for element in elements:
+        if element.text == "15:00":
+            element.click()
+            print("Clicked the 15:00 court availability!")
             break
     else:
-        print("No available courts after 18:00 found.")
+        print("No 15:00 time slot found.")
+    
+    # Give some time for the modal to appear
+    time.sleep(2)
+
+    confirm_button = driver.find_element(By.CSS_SELECTOR, "button.swal2-confirm.swal2-styled.swal2-default-outline")
+    confirm_button.click()
+    print("Clicked the confirmation button on the modal!")
+
+    time.sleep(5)
+
+    driver.find_element(By.ID, "tc").send_keys("11111111111")
+    driver.find_element(By.ID, "adi").send_keys("Arslan")
+    driver.find_element(By.ID, "soyadi").send_keys("test soyadi")
+    driver.find_element(By.ID, "cep_telefonu").send_keys("05431111111")
+    driver.find_element(By.ID, "dogum_tarihi").send_keys("19/11/1998")
+
+    gender_select = driver.find_element(By.ID, "cinsiyet")
+    for option in gender_select.find_elements(By.TAG_NAME, 'option'):
+        if option.text == "Erkek":
+            option.click()
+            break
+
+    driver.find_element(By.ID, "konuk_dogum_tarihi").send_keys("20/11/1998")
+    driver.find_element(By.ID, "konuk_tc").send_keys("11111111111")
+    driver.find_element(By.ID, "konuk_adi").send_keys("test")
+    driver.find_element(By.ID, "konuk_soyadi").send_keys("test surname")
+
+    checkbox = driver.find_element(By.CLASS_NAME, "form-check-input")
+    if not checkbox.is_selected():
+        checkbox.click()
+
+    print("Form filled and checkbox checked!")
+
+    submit_button = driver.find_element(By.CSS_SELECTOR, "button.btn.btn-block.btn-primary")
+    submit_button.click()
+    print("Form submitted!")
+
+    time.sleep(60)
 
 finally:
-    # Close the WebDriver instance
     driver.quit()
