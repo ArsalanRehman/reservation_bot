@@ -10,7 +10,8 @@ chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Path to ChromeDriver, adjust if necessary
+
+#uncomment this line if you wanna run it locally 
 webdriver_service = Service('/home/arslan/python_course/tenis/chromedriver')
 
 driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)
