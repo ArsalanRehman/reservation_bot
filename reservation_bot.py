@@ -24,7 +24,7 @@ driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)
 
 try:
     # Open the target URL
-    driver.get("https://tenis.randevu.sanliurfa.bel.tr/index.php")
+    driver.get("https://tenis.randevu.sanliurfa.bel.tr/index.php?tarih=23/10/2024")
     
     # Wait for the page to load
     time.sleep(5)
